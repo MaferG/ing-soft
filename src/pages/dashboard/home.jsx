@@ -1,4 +1,6 @@
-import React from "react";
+// import React from "react";
+import React, { useState, useEffect } from 'react';
+// import Firebase from '../../../firebase'
 import {
   Typography,
   Card,
@@ -85,6 +87,7 @@ export function Home() {
                 <CheckIcon strokeWidth={3} className="h-4 w-4 text-blue-500" />
                 <strong>30 done</strong> this month
         </Typography>*/}
+
         <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
         {statisticsCardsData.map(({ icon, title, footer, ...rest }) => (
           <StatisticsCard
@@ -102,6 +105,7 @@ export function Home() {
             }
           />
         ))}
+
           </div>
             </div>
             {/*<Menu placement="left-start">
