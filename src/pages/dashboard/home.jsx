@@ -1,5 +1,9 @@
 // import React from "react";
 import React, { useState, useEffect } from 'react';
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth, getTasks } from "../../firebase";
+import { onAuthStateChanged } from "firebase/auth";
+
 // import Firebase from '../../../firebase'
 import {
   Typography,
@@ -14,6 +18,7 @@ import {
   Avatar,
   Tooltip,
   Progress,
+  Button,
 } from "@material-tailwind/react";
 import {
   ClockIcon,
@@ -21,6 +26,13 @@ import {
   EllipsisVerticalIcon,
   ArrowUpIcon,
 } from "@heroicons/react/24/outline";
+import {
+  BanknotesIcon,
+  UserPlusIcon,
+  UserIcon,
+  ChartBarIcon,
+  TableCellsIcon,
+} from "@heroicons/react/24/solid";
 import { StatisticsCard } from "@/widgets/cards";
 import { StatisticsChart } from "@/widgets/charts";
 import {
@@ -29,8 +41,61 @@ import {
   projectsTableData,
   ordersOverviewData,
 } from "@/data";
+import { array, element } from 'prop-types';
+
+// console.log('tasks: ',tasks_data)
+// tasks_data.forEach(doc => {tasks.push(doc)})
+// const tasks = []
+// getTasks().then(array =>{array.forEach(element=> {tasks.push(element)})} )
 
 export function Home() {
+  const [tasks, setTasks] = useState([])
+  // const [projectNames, setProjectNames] = useState([])
+  const [user, loading, error] = useAuthState(auth);
+  const arr = []
+
+  const handleTest = () => {
+    // const ta = []
+    // tasks.then(array => {ta = array})
+    console.log(tasks)
+  }
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+      const data = await getTasks()
+      setTasks(data)
+      // data.forEach(element =>{
+
+      // })
+      console.log('mydata', data)
+    }
+
+
+    if (loading) {
+      // setTasks([])
+      return;
+    }
+    if (user) {
+      // const arr = []
+      // getTasks().then(array=>{array.forEach(element=>{arr.push(element)})})
+      // setTasks(arr)
+      fetchData()
+      // console.log("im in data fetching")
+    }
+
+    const intervalId = setInterval(() => { fetchData() }, 120000)
+
+    return () => {
+      clearInterval(intervalId)
+    }
+
+  }, [user, loading]);
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="mt-12">
       {/*<div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
@@ -78,7 +143,7 @@ export function Home() {
           >
             <div>
               <Typography variant="h6" color="blue-gray" className="mb-5">
-                Proyectos
+                Projects tasks
               </Typography>
               {/*<Typography
                 variant="small"
@@ -88,25 +153,40 @@ export function Home() {
                 <strong>30 done</strong> this month
         </Typography>*/}
 
-        <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
-        {statisticsCardsData.map(({ icon, title, footer, ...rest }) => (
-          <StatisticsCard
-            key={title}
-            {...rest}
-            title={title}
-            icon={React.createElement(icon, {
-              className: "w-6 h-6 text-white",
-            })}
-            footer={
-              <Typography className="font-normal text-blue-gray-600">
-                <strong className={footer.color}>{footer.value}</strong>
-                &nbsp;{footer.label}
-              </Typography>
-            }
-          />
-        ))}
+              <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
 
-          </div>
+                {tasks.map(({ name, description, projectId, authorId, ...rest }) => (
+                  <StatisticsCard
+                    key={projectId.projectName}
+                    {...rest}
+                    title={name}
+                    icon={React.createElement(TableCellsIcon, {
+                      className: "w-6 h-6 text-white",
+                    })}
+                    footer={
+                      <div>
+                        <Typography className="font-normal text-blue-gray-600">
+                          {/* {console.log(projectId)} */}
+                          <strong className={'blue'}>{"Project: "}</strong>
+                          &nbsp;{projectId.projectName}
+                        </Typography>
+                        <Typography className="font-normal text-blue-gray-600">
+                          {/* {console.log(projectId)} */}
+                          <strong className={'blue'}>{"Description: "}</strong>
+                          &nbsp;{description}
+                        </Typography>
+                        <Typography className="font-normal text-blue-gray-600">
+                          {/* {console.log(projectId)} */}
+                          <strong className={'blue'}>{"Author: "}</strong>
+                          &nbsp;{authorId.name}
+                        </Typography>
+                      </div>
+                    }
+                  />
+                ))}
+
+
+              </div>
             </div>
             {/*<Menu placement="left-start">
               <MenuHandler>
@@ -242,11 +322,10 @@ export function Home() {
               ({ icon, color, title, description }, key) => (
                 <div key={title} className="flex items-start gap-4 py-3">
                   <div
-                    className={`relative p-1 after:absolute after:-bottom-6 after:left-2/4 after:w-0.5 after:-translate-x-2/4 after:bg-blue-gray-50 after:content-[''] ${
-                      key === ordersOverviewData.length - 1
-                        ? "after:h-0"
-                        : "after:h-4/6"
-                    }`}
+                    className={`relative p-1 after:absolute after:-bottom-6 after:left-2/4 after:w-0.5 after:-translate-x-2/4 after:bg-blue-gray-50 after:content-[''] ${key === ordersOverviewData.length - 1
+                      ? "after:h-0"
+                      : "after:h-4/6"
+                      }`}
                   >
                     {React.createElement(icon, {
                       className: `!w-5 !h-5 ${color}`,
