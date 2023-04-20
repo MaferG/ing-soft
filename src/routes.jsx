@@ -6,7 +6,7 @@ import {
   ArrowRightOnRectangleIcon,
   UserPlusIcon,
 } from "@heroicons/react/24/solid";
-import { Home, Profile, Tables, Project } from "@/pages/dashboard";
+import { Home, Profile, Tables, Project, Projects } from "@/pages/dashboard";
 import { SignIn, SignUp, LogOut } from "@/pages/auth";
 
 const icon = {
@@ -45,23 +45,23 @@ export const routes = [
   },
   {
     title: "Proyectos",
-    layout: "auth",
+    layout: "dashboard",
     pages: [
       {
         icon: <ArrowRightOnRectangleIcon {...icon} />,
-        name: "proyectos",
-        path: "/sign-in",
-        element: <SignIn />,
+        name: "projects",
+        path: "/projects",
+        element: <Projects />,
       },
     ],
   },
   {
-    title: "Proyectos",
+    title: "TODO",
     layout: "auth",
     pages: [
       {
         icon: <ArrowRightOnRectangleIcon {...icon} />,
-        name: "proyectos",
+        name: "TODO",
         path: "/sign-up",
         element: <SignUp />,
       },
