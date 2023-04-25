@@ -204,18 +204,18 @@ const addProject = async (project) => {
     try {
         const user = auth.currentUser.id
         const userRef = doc(db, 'users', user)
-        const docSnap = await getDoc(userRef);
+        // const docSnap = await getDoc(userRef);
+        console.log("doc2: ", project)
 
-        if (docSnap.exists()) {
-            console.log("User data:", docSnap.data());
-        } else {
-            console.log("No such user!");
-        }
-        console.log("doc2: ")
-        const document = {...project, authorId:userRef, members:[userRef]}
-        console.log("doc3: ", document)
+        // if (docSnap.exists()) {
+            // console.log("User data is:", docSnap.data());
+        // } else {
+            // console.log("No such user!");
+        // }
+        // const document = {...project, authorId:userRef, members:[userRef]}
+        // console.log("doc3: ", document)
         // const docRef = await addDoc(collection(db, "projects"), document);
-        console.log("Project added with ID: ", docRef.id);
+        // console.log("Project added with ID: ", docRef.id);
     } catch (error) {
         console.error("Error adding project: ", error);
     }
