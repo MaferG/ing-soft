@@ -122,12 +122,12 @@ export function Home() {
 
                 {tasks.map(({ name, description, projectId, authorId, ...rest }) => (
                   <StatisticsCard
-                    key={projectId.projectName}
-                    {...rest}
+                    key={name}
                     title={name}
                     icon={React.createElement(TableCellsIcon, {
                       className: "w-6 h-6 text-white",
                     })}
+                    {...rest}
                     footer={
                       <div>
                         <Typography className="font-normal text-blue-gray-600">

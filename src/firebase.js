@@ -168,18 +168,56 @@ const getProjects = async () => {
             console.log("No such user!");
         }
 
-        const projectsQuery = query(collection(db, "projects"), where("assignedId", "==", userRef));
-        const tasksDocs = await getDocs(tasksQuery)
-        const tasks = []
-        tasksDocs.forEach((document) => {
+        const projectsQuery = query(collection(db, "projects"), where("members", "array-contains", userRef));
+        // console.log("projects query:", projectsQuery);
+        const projectsDocs = await getDocs(projectsQuery)
+        // console.log("projects docs:", projectsDocs);
+        const projects = []
+        projectsDocs.forEach((document) => {
             const dat = document.data()
-            tasks.push(dat)
+            projects.push(dat)
         })
 
+        // console.log("projects:", projects);
+
+        const projectsStrings = await Promise.all(
+            projects.map(async (element) => {
+                const authorId = doc(db, "users", element.authorId.id)
+                const authorDoc = await getDoc(authorId)
+                const authorObj = {
+                    name: authorDoc.get("name"),
+                    email: authorDoc.get("email"),
+                };
+                return { ...element, authorId: authorObj }
+
+            })
+        )
+        return projectsStrings;
 
     } catch (error) {
         console.error(error)
         alert(error.message)
+    }
+}
+
+const addProject = async (project) => {
+    try {
+        const user = auth.currentUser.id
+        const userRef = doc(db, 'users', user)
+        const docSnap = await getDoc(userRef);
+
+        if (docSnap.exists()) {
+            console.log("User data:", docSnap.data());
+        } else {
+            console.log("No such user!");
+        }
+        console.log("doc2: ")
+        const document = {...project, authorId:userRef, members:[userRef]}
+        console.log("doc3: ", document)
+        // const docRef = await addDoc(collection(db, "projects"), document);
+        console.log("Project added with ID: ", docRef.id);
+    } catch (error) {
+        console.error("Error adding project: ", error);
     }
 }
 
@@ -193,4 +231,6 @@ export {
     sendPasswordReset,
     logout,
     getTasks,
+    getProjects,
+    addProject,
 };

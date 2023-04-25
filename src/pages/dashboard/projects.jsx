@@ -1,7 +1,7 @@
 // import React from "react";
 import React, { useState, useEffect } from 'react';
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, getTasks } from "../../firebase";
+import { auth, getTasks, getProjects, addProject } from "../../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
 // import Firebase from '../../../firebase'
@@ -25,10 +25,15 @@ import {
     TabsBody,
     Tab,
     TabPanel,
+    Dialog,
+    DialogHeader,
+    DialogBody,
+    DialogFooter,
+    Input,
+    Checkbox,
 
 } from "@material-tailwind/react";
 import {
-
     CheckIcon,
     EllipsisVerticalIcon,
     ArrowUpIcon,
@@ -61,39 +66,37 @@ import { array, element } from 'prop-types';
 // getTasks().then(array =>{array.forEach(element=> {tasks.push(element)})} )
 
 export function Projects() {
-    const [tasks, setTasks] = useState([])
-    // const [projectNames, setProjectNames] = useState([])
+    const [projects, setProjects] = useState([]);
+    const [openDialog, setOpenDialog] = useState(false);
     const [user, loading, error] = useAuthState(auth);
-    const arr = []
+    const [newProjectName, setNewProjectName] = useState("");
+    const [newProjectDescription, setNewProjectDescription] = useState("");
 
-    const handleTest = () => {
-        // const ta = []
-        // tasks.then(array => {ta = array})
-        console.log(tasks)
+    const handleCreateNewProject = () => {
+
+        const document = {projectName:newProjectName, description:newProjectDescription}
+        console.log("doc1: ",document)
+        addProject(document);
+        // console.log(props)
+        setOpenDialog(!openDialog);
     }
+    const handleOpen = () => setOpenDialog(!openDialog);
 
     useEffect(() => {
 
         const fetchData = async () => {
-            const data = await getTasks()
-            setTasks(data)
-            // data.forEach(element =>{
-
-            // })
-            console.log('mydata', data)
+            const data = await getProjects()
+            setProjects(data)
+            // console.log('mydata', data)
         }
 
 
         if (loading) {
-            // setTasks([])
+            setProjects([])
             return;
         }
         if (user) {
-            // const arr = []
-            // getTasks().then(array=>{array.forEach(element=>{arr.push(element)})})
-            // setTasks(arr)
             fetchData()
-            // console.log("im in data fetching")
         }
 
         const intervalId = setInterval(() => { fetchData() }, 120000)
@@ -109,7 +112,35 @@ export function Projects() {
     }
 
     return (
-        <Tabs value="test">
+        <Tabs value="all">
+            <Dialog
+                size="xs"
+                open={openDialog}
+                handler={handleOpen}
+                className="bg-transparent shadow-none"
+            >
+                <Card className="mx-auto w-full max-w-[24rem]">
+                    <CardHeader
+                        variant="gradient"
+                        color="blue"
+                        className="mb-4 grid h-28 place-items-center"
+                    >
+                        <Typography variant="h3" color="white">
+                            New Project
+                        </Typography>
+                    </CardHeader>
+                    <CardBody className="flex flex-col gap-4">
+                        <Input label="Name" size="lg" onChange={(event)=>setNewProjectName(event.target.value)}/>
+                        <Input label="Description" size="lg" onChange={(event)=>setNewProjectDescription(event.target.value)} />
+                    </CardBody>
+                    <CardFooter className="pt-0">
+                        <Button variant="gradient" onClick={handleCreateNewProject} fullWidth>
+                            Add
+                        </Button>
+                        
+                    </CardFooter>
+                </Card>
+            </Dialog>
             <TabsHeader>
                 <Tab key="all" value="all">
                     <div className="flex items-center gap-2">
@@ -123,6 +154,7 @@ export function Projects() {
                         Groups
                     </div>
                 </Tab>
+                <Button onClick={handleOpen}>New Project</Button>
             </TabsHeader>
             <TabsBody>
                 <Card className="w-full  shadow-lg overflow-hidden xl:col-span-2">
@@ -131,22 +163,23 @@ export function Projects() {
                         <div className="to-bg-black-10 absolute inset-0 h-full w-full bg-gradient-to-tr from-transparent via-transparent to-black/60 " />
                     </CardHeader>
                     <CardBody>
-                        <Typography color="gray">
+                        {/* <Typography color="gray">
                             here some
-                        </Typography>
+                        </Typography> */}
                         <div className="mb-3 flex items-center justify-between">
                             <TabPanel key="all" value="all">
                                 <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
+                                    {projects.map(({ projectName, authorId, description, ...rest }) => (
+                                        <StatisticsCard
+                                            color='blue'
+                                            icon={React.createElement(TableCellsIcon)}
+                                            title={authorId.name}
+                                            value={projectName}
+                                            key={projectName}
+                                            footer={description}
+                                        />
+                                    ))}
 
-                                    <StatisticsCard
-                                        color='blue'
-                                        icon={React.createElement(TableCellsIcon)}
-                                        title="something"
-                                        value="some value"
-                                        key="some"
-                                        footer={<p>hello</p>}>
-
-                                    </StatisticsCard>
                                 </div>
                             </TabPanel>
                             <TabPanel key="groups" value="groups">
@@ -154,12 +187,12 @@ export function Projects() {
                             </TabPanel>
 
                         </div>
-                        <div className="group mt-8 inline-flex flex-wrap items-center gap-3">
+                        {/* <div className="group mt-8 inline-flex flex-wrap items-center gap-3">
                             here some more
-                        </div>
+                        </div> */}
                     </CardBody>
                     <CardFooter className="pt-3">
-
+                        <div />
                     </CardFooter>
                 </Card>
             </TabsBody>
