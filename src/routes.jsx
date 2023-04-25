@@ -6,8 +6,8 @@ import {
   ArrowRightOnRectangleIcon,
   UserPlusIcon,
 } from "@heroicons/react/24/solid";
-import { Home, Profile, Tables, Project } from "@/pages/dashboard";
-import { SignIn, SignUp } from "@/pages/auth";
+import { Home, Profile, Tables, Project, Users } from "@/pages/dashboard";
+import { SignIn, SignUp, LogOut } from "@/pages/auth";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -41,6 +41,12 @@ export const routes = [
         path: "/project",
         element: <Project />,
       },
+      {
+        icon: <TableCellsIcon {...icon} />,
+        name: "Usuarios",
+        path: "/users",
+        element: <Users />,
+      },
     ],
   },
   {
@@ -52,6 +58,30 @@ export const routes = [
         name: "proyectos",
         path: "/sign-in",
         element: <SignIn />,
+      },
+    ],
+  },
+  {
+    title: "Proyectos",
+    layout: "auth",
+    pages: [
+      {
+        icon: <ArrowRightOnRectangleIcon {...icon} />,
+        name: "proyectos",
+        path: "/sign-up",
+        element: <SignUp />,
+      },
+    ],
+  },
+  {
+    title: "Log Out",
+    layout: "auth",
+    pages: [
+      {
+        icon: <ArrowRightOnRectangleIcon {...icon} />,
+        name: "Log Out",
+        path: "/log-out",
+        element: <LogOut />,
       },
     ],
   },
