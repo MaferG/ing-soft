@@ -6,7 +6,14 @@ import {
   ArrowRightOnRectangleIcon,
   UserPlusIcon,
 } from "@heroicons/react/24/solid";
-import { Home, Profile, Tables, Project, Users } from "@/pages/dashboard";
+import {
+  Home,
+  Profile,
+  Tables,
+  Project,
+  Users,
+  Projects,
+} from "@/pages/dashboard";
 import { SignIn, SignUp, LogOut } from "@/pages/auth";
 
 const icon = {
@@ -24,57 +31,39 @@ export const routes = [
         element: <Home />,
       },
       {
+        icon: <UserPlusIcon {...icon} />,
+        name: "Usuarios",
+        path: "/users",
+        element: <Users />,
+      },
+      {
+        icon: <TableCellsIcon {...icon} />,
+        name: "proyectos",
+        path: "/projects",
+        element: <Projects />,
+      },
+      {
+        icon: <TableCellsIcon {...icon} />,
+        name: "proyecto",
+        path: "/project",
+        element: <Project />,
+      },
+      {
         icon: <UserCircleIcon {...icon} />,
         name: "reportes",
         path: "/profile",
         element: <Profile />,
       },
       {
-        icon: <TableCellsIcon {...icon} />,
+        icon: <BellIcon {...icon} />,
         name: "agenda",
         path: "/tables",
         element: <Tables />,
       },
-      {
-        icon: <TableCellsIcon {...icon} />,
-        name: "proyectos",
-        path: "/project",
-        element: <Project />,
-      },
-      {
-        icon: <TableCellsIcon {...icon} />,
-        name: "Usuarios",
-        path: "/users",
-        element: <Users />,
-      },
     ],
   },
   {
-    title: "Proyectos",
-    layout: "auth",
-    pages: [
-      {
-        icon: <ArrowRightOnRectangleIcon {...icon} />,
-        name: "proyectos",
-        path: "/sign-in",
-        element: <SignIn />,
-      },
-    ],
-  },
-  {
-    title: "Proyectos",
-    layout: "auth",
-    pages: [
-      {
-        icon: <ArrowRightOnRectangleIcon {...icon} />,
-        name: "proyectos",
-        path: "/sign-up",
-        element: <SignUp />,
-      },
-    ],
-  },
-  {
-    title: "Log Out",
+    title: "Registro",
     layout: "auth",
     pages: [
       {
@@ -82,6 +71,18 @@ export const routes = [
         name: "Log Out",
         path: "/log-out",
         element: <LogOut />,
+      },
+      {
+        icon: <ArrowRightOnRectangleIcon {...icon} />,
+        name: "Registrarse",
+        path: "/sign-up",
+        element: <SignUp />,
+      },
+      {
+        icon: <ArrowRightOnRectangleIcon {...icon} />,
+        name: "Iniciar sesion",
+        path: "/sign-in",
+        element: <SignIn />,
       },
     ],
   },

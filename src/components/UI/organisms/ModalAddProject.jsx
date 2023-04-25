@@ -16,19 +16,14 @@ import {
 } from "@material-tailwind/react";
 import { format } from "prettier";
 
-export default function ModalForm({ getUsers }) {
-  const usersCollectionRef = collection(db, "users");
+export default function ModalAddProject({ getProjects }) {
+  const projectCollectionRef = collection(db, "projects");
 
   const [open, setOpen] = React.useState(false);
   const [formData, setFormData] = useState({
     name: "",
     lastname: "",
-    gender: "",
-    email: "",
-    password: "",
   });
-  const [email, setEmail] = React.useState(false);
-  const [password, setPassword] = React.useState(false);
 
   const onChangeValue = (e, name) => {
     setFormData((prev) => {
@@ -38,15 +33,12 @@ export default function ModalForm({ getUsers }) {
 
   const onSubmit = async () => {
     try {
-      await addDoc(usersCollectionRef, {
+      await addDoc(projectCollectionRef, {
         name: formData.name,
-        lastname: formData.lastname,
-        email: email,
-        gender: formData.gender,
+        description: formData.lastname,
       });
 
-      await createUserWithEmailAndPassword(auth, email, password);
-      getUsers();
+      getProjects();
       setOpen(false);
     } catch (error) {
       console.log("Error", error);
@@ -56,7 +48,7 @@ export default function ModalForm({ getUsers }) {
   return (
     <React.Fragment>
       <Button onClick={handleOpen} color="green">
-        Agregar usuario
+        Agregar proyecto
       </Button>
       <Dialog
         size="xs"
@@ -72,24 +64,9 @@ export default function ModalForm({ getUsers }) {
               onChange={(e) => onChangeValue(e, "name")}
             />
             <Input
-              label="Apellido"
+              label="Descripcion"
               size="lg"
               onChange={(e) => onChangeValue(e, "lastname")}
-            />
-            <Input
-              label="Genero"
-              size="lg"
-              onChange={(e) => onChangeValue(e, "gender")}
-            />
-            <Input
-              label="Email"
-              size="lg"
-              onChange={(event) => setEmail(event.target.value)}
-            />
-            <Input
-              label="Contraseña"
-              size="lg"
-              onChange={(event) => setPassword(event.target.value)}
             />
           </CardBody>
           <CardFooter className="pt-0">

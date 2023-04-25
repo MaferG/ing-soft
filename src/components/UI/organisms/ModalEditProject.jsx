@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { auth, db } from "../../../configs/firebase";
-import { collection, getDocs, addDoc } from "firebase/firestore";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { collection, getDoc, addDoc, doc, updateDoc } from "firebase/firestore";
+import { PencilIcon } from "@heroicons/react/24/outline";
 
 import {
   Button,
@@ -13,22 +13,28 @@ import {
   Typography,
   Input,
   Checkbox,
+  IconButton,
 } from "@material-tailwind/react";
-import { format } from "prettier";
 
-export default function ModalForm({ getUsers }) {
-  const usersCollectionRef = collection(db, "users");
-
+export default function ModalEditProject({ id, getProjects }) {
   const [open, setOpen] = React.useState(false);
   const [formData, setFormData] = useState({
     name: "",
-    lastname: "",
-    gender: "",
-    email: "",
-    password: "",
+    description: "",
   });
-  const [email, setEmail] = React.useState(false);
-  const [password, setPassword] = React.useState(false);
+
+  useEffect(() => {
+    const update = async () => {
+      const projectToUpdate = doc(db, "projects", id);
+      const docSnap = await getDoc(projectToUpdate);
+      const filterData = docSnap.data();
+      setFormData({
+        name: filterData.name,
+        description: filterData.description,
+      });
+    };
+    update();
+  }, []);
 
   const onChangeValue = (e, name) => {
     setFormData((prev) => {
@@ -38,15 +44,12 @@ export default function ModalForm({ getUsers }) {
 
   const onSubmit = async () => {
     try {
-      await addDoc(usersCollectionRef, {
+      const projectToUpdate = doc(db, "projects", id);
+      await updateDoc(projectToUpdate, {
         name: formData.name,
-        lastname: formData.lastname,
-        email: email,
-        gender: formData.gender,
+        description: formData.description,
       });
-
-      await createUserWithEmailAndPassword(auth, email, password);
-      getUsers();
+      getProjects();
       setOpen(false);
     } catch (error) {
       console.log("Error", error);
@@ -55,9 +58,15 @@ export default function ModalForm({ getUsers }) {
   const handleOpen = () => setOpen((cur) => !cur);
   return (
     <React.Fragment>
-      <Button onClick={handleOpen} color="green">
-        Agregar usuario
-      </Button>
+      <IconButton
+        onClick={handleOpen}
+        variant="text"
+        color="white"
+        size="sm"
+        ripple={false}
+      >
+        <PencilIcon strokeWidth={2.5} className="h-5 w-5 text-white" />
+      </IconButton>
       <Dialog
         size="xs"
         open={open}
@@ -67,34 +76,21 @@ export default function ModalForm({ getUsers }) {
         <Card className="mx-auto w-full max-w-[24rem]">
           <CardBody className="flex flex-col gap-4">
             <Input
+              value={formData.name}
               label="Nombre"
               size="lg"
               onChange={(e) => onChangeValue(e, "name")}
             />
             <Input
-              label="Apellido"
+              value={formData.description}
+              label="Descripcion"
               size="lg"
               onChange={(e) => onChangeValue(e, "lastname")}
-            />
-            <Input
-              label="Genero"
-              size="lg"
-              onChange={(e) => onChangeValue(e, "gender")}
-            />
-            <Input
-              label="Email"
-              size="lg"
-              onChange={(event) => setEmail(event.target.value)}
-            />
-            <Input
-              label="Contraseña"
-              size="lg"
-              onChange={(event) => setPassword(event.target.value)}
             />
           </CardBody>
           <CardFooter className="pt-0">
             <Button variant="gradient" onClick={onSubmit} fullWidth>
-              Agregar
+              Editar
             </Button>
           </CardFooter>
         </Card>

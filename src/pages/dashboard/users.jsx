@@ -7,26 +7,27 @@ export function Users() {
 
   const usersCollectionRef = collection(db, "users");
 
+  const getUsers = async () => {
+    try {
+      const data = await getDocs(usersCollectionRef);
+      const filterData = data.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setUsers(filterData);
+      console.log("Data", filterData);
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
+
   useEffect(() => {
-    const getUsers = async () => {
-      try {
-        const data = await getDocs(usersCollectionRef);
-        const filterData = data.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
-        setUsers(filterData);
-        console.log("Data", filterData);
-      } catch (error) {
-        console.log("Error", error);
-      }
-    };
     getUsers();
   }, []);
 
   return (
     <>
-      <UsersTemplate users={users} />
+      <UsersTemplate users={users} getUsers={getUsers} />
     </>
   );
 }

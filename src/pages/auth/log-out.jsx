@@ -6,7 +6,6 @@ export function LogOut() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    signOut();
     navigate("/auth/sign-in");
   }, []);
 

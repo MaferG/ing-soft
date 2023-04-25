@@ -5,15 +5,16 @@ import React, { useState, useEffect } from "react";
 import { auth } from "../../configs/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { db } from "../../configs/firebase";
-import { getDocs, collection } from "firebase/firestore";
+import { getDocs, collection, addDoc } from "firebase/firestore";
 
 export function SignUp() {
-
   const nav = useNavigate();
+  const usersCollectionRef = collection(db, "users");
+
 
   console.log("CURRENT USER", auth?.currentUser?.email);
 
-  const handleRegister = async (event, email, password) => {
+  const handleRegister = async (event, email, password, name, lastname, gender) => {
     event.preventDefault();
     try {
       const userCreated = await createUserWithEmailAndPassword(
@@ -21,6 +22,12 @@ export function SignUp() {
         email,
         password
       );
+      await addDoc(usersCollectionRef, {
+        name: name,
+        lastname: lastname,
+        email: email,
+        gender: gender,
+      });
       if (userCreated) {
         nav("/dashboard/home");
         console.log("User created");

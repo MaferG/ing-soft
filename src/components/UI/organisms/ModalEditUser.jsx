@@ -14,7 +14,7 @@ import {
   Checkbox,
 } from "@material-tailwind/react";
 
-export default function ModalEditUser({ id }) {
+export default function ModalEditUser({ id, getUsers }) {
   const [open, setOpen] = React.useState(false);
   const [formData, setFormData] = useState({
     name: "yo",
@@ -38,8 +38,6 @@ export default function ModalEditUser({ id }) {
         email: filterData.email,
         password: 1234567,
       });
-
-      console.log("USERTOUPDATE", docSnap.data());
     };
     update();
   }, []);
@@ -59,6 +57,7 @@ export default function ModalEditUser({ id }) {
         email: formData.email,
         gender: formData.gender,
       });
+      getUsers();
       setOpen(false);
     } catch (error) {
       console.log("Error", error);
@@ -67,7 +66,9 @@ export default function ModalEditUser({ id }) {
   const handleOpen = () => setOpen((cur) => !cur);
   return (
     <React.Fragment>
-      <Button onClick={handleOpen}>Editar</Button>
+      <Button onClick={handleOpen} color="orange">
+        Editar
+      </Button>
       <Dialog
         size="xs"
         open={open}
@@ -109,7 +110,7 @@ export default function ModalEditUser({ id }) {
           </CardBody>
           <CardFooter className="pt-0">
             <Button variant="gradient" onClick={onSubmit} fullWidth>
-              Agregar
+              Editar
             </Button>
           </CardFooter>
         </Card>

@@ -12,26 +12,18 @@ import {
   Typography,
   Input,
   Checkbox,
+  IconButton,
 } from "@material-tailwind/react";
+import { TrashIcon } from "@heroicons/react/24/outline";
 
-export default function ModalDeleteUser({ id, getUsers }) {
-  console.log("ID", id);
-  const usersCollectionRef = collection(db, "users");
-
+export default function ModalDeleteProject({ id, getProjects }) {
   const [open, setOpen] = React.useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    lastname: "",
-    gender: "",
-    email: "",
-    password: "",
-  });
 
   const onSubmit = async () => {
     try {
-      const userToDelete = doc(db, "users", id);
+      const userToDelete = doc(db, "projects", id);
       await deleteDoc(userToDelete);
-      getUsers();
+      getProjects();
       setOpen(false);
     } catch (error) {
       console.log("Error", error);
@@ -40,9 +32,15 @@ export default function ModalDeleteUser({ id, getUsers }) {
   const handleOpen = () => setOpen((cur) => !cur);
   return (
     <React.Fragment>
-      <Button onClick={handleOpen}>
-        Eliminar
-      </Button>
+      <IconButton
+        onClick={handleOpen}
+        variant="text"
+        color="white"
+        size="sm"
+        ripple={false}
+      >
+        <TrashIcon strokeWidth={2.5} className="h-5 w-5 text-white" />
+      </IconButton>
       <Dialog
         size="xs"
         open={open}
@@ -51,7 +49,7 @@ export default function ModalDeleteUser({ id, getUsers }) {
       >
         <Card className="mx-auto w-full max-w-[24rem]">
           <CardBody className="flex flex-col gap-4">
-            ¿Desea eliminar este usuario?
+            ¿Desea eliminar este proyecto?
           </CardBody>
           <CardFooter className="pt-0">
             <Button

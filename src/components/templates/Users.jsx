@@ -13,13 +13,13 @@ import ModalForm from "../UI/organisms/ModalAddUser";
 import ModalDeleteUser from "../UI/organisms/ModalDeleteUser";
 import ModalEditUser from "../UI/organisms/ModalEditUser";
 
-export function UsersTemplate({ users }) {
+export function UsersTemplate({ users, getUsers }) {
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
         <CardHeader variant="gradient" color="white" className="mb-8 p-6">
           <Typography variant="h6" color="white">
-            <ModalForm />
+            <ModalForm getUsers={getUsers} />
           </Typography>
         </CardHeader>
         <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
@@ -85,7 +85,7 @@ export function UsersTemplate({ users }) {
                         href="#"
                         className="text-xs font-semibold text-blue-gray-600"
                       >
-                        <ModalEditUser id={id} />
+                        <ModalEditUser id={id} getUsers={getUsers} />
                       </Typography>
                     </td>
                     <td className={className}>
@@ -94,7 +94,7 @@ export function UsersTemplate({ users }) {
                         href="#"
                         className="text-xs font-semibold text-blue-gray-600"
                       >
-                        <ModalDeleteUser id={id} />
+                        <ModalDeleteUser id={id} getUsers={getUsers}  />
                       </Typography>
                     </td>
                   </tr>

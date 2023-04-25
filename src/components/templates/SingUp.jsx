@@ -17,6 +17,8 @@ export function SignUpTemplate({ handleRegister }) {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [lastname, setLastname] = useState("");
+  const [gender, setGender] = useState("");
+
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
   const [isSignUpButtonDisabled, setIsSignUpButtonDisabled] = useState(true);
 
@@ -49,13 +51,19 @@ export function SignUpTemplate({ handleRegister }) {
           <CardBody className="flex flex-col gap-4">
             <Input
               type="name"
-              label="Name"
+              label="Nombre"
               size="lg"
               onChange={(event) => setName(event.target.value)}
             />
             <Input
               type="lastname"
-              label="Lastname"
+              label="Apellido"
+              size="lg"
+              onChange={(event) => setLastname(event.target.value)}
+            />
+            <Input
+              type="gender"
+              label="Genero"
               size="lg"
               onChange={(event) => setLastname(event.target.value)}
             />
@@ -68,7 +76,7 @@ export function SignUpTemplate({ handleRegister }) {
             {/* {isEmailTaken && <p>Email is already taken</p>} */}
             <Input
               type="password"
-              label="Password"
+              label="Contraseña"
               size="lg"
               onChange={(event) => setPassword(event.target.value)}
             />
@@ -84,7 +92,9 @@ export function SignUpTemplate({ handleRegister }) {
             <Button
               variant="gradient"
               fullWidth
-              onClick={(e) => handleRegister(e, email, password)}
+              onClick={(e) =>
+                handleRegister(e, email, password, name, lastname, gender)
+              }
               disabled={isSignUpButtonDisabled}
             >
               Registrarse

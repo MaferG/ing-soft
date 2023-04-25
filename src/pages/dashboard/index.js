@@ -3,3 +3,5 @@ export * from "@/pages/dashboard/profile";
 export * from "@/pages/dashboard/tables";
 export * from "@/pages/dashboard/project";
 export * from "@/pages/dashboard/users";
+export * from "@/pages/dashboard/projects";
+
