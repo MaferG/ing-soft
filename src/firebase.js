@@ -22,6 +22,7 @@ import {
     addDoc,
     getDoc,
     doc,
+    deleteDoc,
 } from "firebase/firestore";
 import { json } from "react-router-dom";
 import { element } from "prop-types";
@@ -202,23 +203,57 @@ const getProjects = async () => {
 
 const addProject = async (project) => {
     try {
-        const user = auth.currentUser.id
+        const user = auth.currentUser.uid
         const userRef = doc(db, 'users', user)
         // const docSnap = await getDoc(userRef);
-        console.log("doc2: ", project)
+        // console.log("doc2: ", project)
 
         // if (docSnap.exists()) {
-            // console.log("User data is:", docSnap.data());
+        //     console.log("User data is:", docSnap.data());
         // } else {
-            // console.log("No such user!");
+        //     console.log("No such user!");
         // }
-        // const document = {...project, authorId:userRef, members:[userRef]}
+        
+        //TODO:
+        // validate preoject to not be repeated to avoid bad queries when searching updating or deleting.
+
+
+        const document = { ...project, authorId: userRef, members: [userRef] }
         // console.log("doc3: ", document)
-        // const docRef = await addDoc(collection(db, "projects"), document);
+        const docRef = await addDoc(collection(db, "projects"), document);
         // console.log("Project added with ID: ", docRef.id);
     } catch (error) {
         console.error("Error adding project: ", error);
     }
+}
+
+const deleteProject = async (project) => {
+
+    try {
+        const user = auth.currentUser.uid
+        const userRef = doc(db, 'users', user)
+        
+        const projectsOwnedQuery = query(collection(db,'projects'),where('authorId','==',userRef));
+        // const projectsMemberQuery = query(collection(db,'projects'),where('members','array-contains',userRef));
+        // const 
+        // console.log("owned: ", (await getDocs(projectsOwnedQuery)).docs)
+        const toDeleteQuery = query(projectsOwnedQuery,where('projectName','==',project.name))
+        const toDeleteDocs = await getDocs(toDeleteQuery)
+        
+        toDeleteDocs.forEach((element)=>{
+            console.log("element: ", element.ref )
+            const result = deleteDoc(element.ref)
+            console.log("result: ", result )
+        })
+        console.log('here')
+
+        // console.log("to be deleted: ", toDeleteDocs.docs)
+    
+        // const docRef = await deleteDoc()
+    } catch (error) {
+        console.error("Error deleting project: ", error);
+    }
+
 }
 
 
@@ -233,4 +268,5 @@ export {
     getTasks,
     getProjects,
     addProject,
+    deleteProject,
 };

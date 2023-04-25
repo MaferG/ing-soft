@@ -1,7 +1,7 @@
 // import React from "react";
 import React, { useState, useEffect } from 'react';
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, getTasks, getProjects, addProject } from "../../firebase";
+import { auth, getTasks, getProjects, addProject, deleteProject } from "../../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
 // import Firebase from '../../../firebase'
@@ -68,28 +68,39 @@ import { array, element } from 'prop-types';
 export function Projects() {
     const [projects, setProjects] = useState([]);
     const [openDialog, setOpenDialog] = useState(false);
+    const [openDialogDelete, setOpenDialogDelete] = useState(false);
     const [user, loading, error] = useAuthState(auth);
     const [newProjectName, setNewProjectName] = useState("");
     const [newProjectDescription, setNewProjectDescription] = useState("");
+    const [toBeDeleted, setToBeDeleted] = useState("");
 
+    const fetchData = async () => {
+        const data = await getProjects()
+        setProjects(data)
+        // console.log('mydata', data)
+    }
     const handleCreateNewProject = () => {
 
         const document = {projectName:newProjectName, description:newProjectDescription}
         console.log("doc1: ",document)
         addProject(document);
         // console.log(props)
+        fetchData()
         setOpenDialog(!openDialog);
+        
     }
+    
     const handleOpen = () => setOpenDialog(!openDialog);
+    const handleOpenDelete = () => setOpenDialogDelete(!openDialogDelete);
+
+    const handleDelete = () => {
+        deleteProject({name:toBeDeleted});
+        fetchData()
+        setOpenDialogDelete(!openDialogDelete);
+    }
+
 
     useEffect(() => {
-
-        const fetchData = async () => {
-            const data = await getProjects()
-            setProjects(data)
-            // console.log('mydata', data)
-        }
-
 
         if (loading) {
             setProjects([])
@@ -141,6 +152,33 @@ export function Projects() {
                     </CardFooter>
                 </Card>
             </Dialog>
+            <Dialog
+                size="xs"
+                open={openDialogDelete}
+                handler={handleOpenDelete}
+                className="bg-transparent shadow-none"
+            >
+                <Card className="mx-auto w-full max-w-[24rem]">
+                    <CardHeader
+                        variant="gradient"
+                        color="red"
+                        className="mb-4 grid h-28 place-items-center"
+                    >
+                        <Typography variant="h3" color="white">
+                            Delete Project
+                        </Typography>
+                    </CardHeader>
+                    <CardBody className="flex flex-col gap-4">
+                        <Input label="Name" size="lg" onChange={(event)=>setToBeDeleted(event.target.value)}/>
+                    </CardBody>
+                    <CardFooter className="pt-0">
+                        <Button color='red' variant="gradient" onClick={handleDelete} fullWidth>
+                            DELETE
+                        </Button>
+                        
+                    </CardFooter>
+                </Card>
+            </Dialog>
             <TabsHeader>
                 <Tab key="all" value="all">
                     <div className="flex items-center gap-2">
@@ -154,7 +192,8 @@ export function Projects() {
                         Groups
                     </div>
                 </Tab>
-                <Button onClick={handleOpen}>New Project</Button>
+                <Button color='green' onClick={handleOpen}>New Project</Button>
+                <Button color='red' onClick={handleOpenDelete}>Delete</Button>
             </TabsHeader>
             <TabsBody>
                 <Card className="w-full  shadow-lg overflow-hidden xl:col-span-2">
