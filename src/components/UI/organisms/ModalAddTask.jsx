@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { auth, db } from "../../../configs/firebase";
-import { collection, getDocs, addDoc } from "firebase/firestore";
+import { updateDoc, getDoc, doc, arrayUnion } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
 import {
@@ -13,41 +13,43 @@ import {
   Typography,
   Input,
   Checkbox,
+  Select,
+  Option,
 } from "@material-tailwind/react";
 import { format } from "prettier";
 
-export default function ModalForm({ getUsers }) {
-  const usersCollectionRef = collection(db, "users");
-
+export default function ModalAddTask({
+  getProjectsn,
+  name,
+  id,
+  setTasks,
+  tasks,
+}) {
   const [open, setOpen] = React.useState(false);
   const [formData, setFormData] = useState({
     name: "",
-    lastname: "",
-    gender: "",
-    email: "",
-    password: "",
+    description: "",
+    type: "",
   });
-  const [email, setEmail] = React.useState(false);
-  const [password, setPassword] = React.useState(false);
 
   const onChangeValue = (e, name) => {
     setFormData((prev) => {
-      return { ...prev, [name]: e.target.value };
+      if (name != "type") return { ...prev, [name]: e.target.value };
+      return { ...prev, [name]: e };
     });
   };
 
   const onSubmit = async () => {
     try {
-      await addDoc(usersCollectionRef, {
-        name: formData.name,
-        lastname: formData.lastname,
-        email: email,
-        gender: formData.gender,
-        rol: formData.rol,
+      const projectRef = doc(db, "projects", id);
+      const docSnap = await getDoc(projectRef);
+      const filterData = docSnap.data();
+      await updateDoc(projectRef, {
+        tasks: arrayUnion(formData),
       });
+      setTasks([...tasks, formData]);
+      console.log("FILTER", filterData);
 
-      await createUserWithEmailAndPassword(auth, email, password);
-      getUsers();
       setOpen(false);
     } catch (error) {
       console.log("Error", error);
@@ -57,7 +59,7 @@ export default function ModalForm({ getUsers }) {
   return (
     <React.Fragment>
       <Button onClick={handleOpen} color="green">
-        Agregar usuario
+        {name}
       </Button>
       <Dialog
         size="xs"
@@ -73,30 +75,21 @@ export default function ModalForm({ getUsers }) {
               onChange={(e) => onChangeValue(e, "name")}
             />
             <Input
-              label="Apellido"
+              label="Descripcion"
               size="lg"
-              onChange={(e) => onChangeValue(e, "lastname")}
+              onChange={(e) => onChangeValue(e, "description")}
             />
-            <Input
-              label="Genero"
+            <Select
+              label="Tipo"
               size="lg"
-              onChange={(e) => onChangeValue(e, "gender")}
-            />
-            <Input
-              label="Rol"
-              size="lg"
-              onChange={(e) => onChangeValue(e, "rol")}
-            />
-            <Input
-              label="Email"
-              size="lg"
-              onChange={(event) => setEmail(event.target.value)}
-            />
-            <Input
-              label="Contraseña"
-              size="lg"
-              onChange={(event) => setPassword(event.target.value)}
-            />
+              id="type"
+              onChange={(e) => onChangeValue(e, "type")}
+            >
+              <Option selected>Seleccione</Option>
+              <Option value="todo">Por hacer</Option>
+              <Option value="progress">En curso</Option>
+              <Option value="done">Terminada</Option>
+            </Select>
           </CardBody>
           <CardFooter className="pt-0">
             <Button variant="gradient" onClick={onSubmit} fullWidth>

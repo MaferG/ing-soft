@@ -1,11 +1,16 @@
 // import React from "react";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import ProjectsTemplate from "@/components/templates/Projects";
 import { auth, db } from "../../configs/firebase";
 import { collection, getDocs } from "firebase/firestore";
+import { UserContext } from "@/context/UserContext";
 
 export function Projects() {
   const [projects, setProjects] = useState([]);
+  const [currentProject, setCurrentProject] = useState();
+  const { setProject } = useContext(UserContext);
+
+  console.log("CurrentProject", currentProject);
 
   const projectsCollectionRef = collection(db, "projects");
 
@@ -27,7 +32,16 @@ export function Projects() {
     getProjects();
   }, []);
 
-  return <ProjectsTemplate projects={projects} getProjects={getProjects} />;
+  return (
+    <>
+      <ProjectsTemplate
+        projects={projects}
+        getProjects={getProjects}
+        setCurrentProject={setProject}
+      />
+      ;
+    </>
+  );
 }
 
 export default Projects;

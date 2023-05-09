@@ -13,7 +13,15 @@ import { TrashIcon, PencilIcon } from "@heroicons/react/24/outline";
 import ModalDeleteProject from "@/components/UI/organisms/ModalDeleteProject";
 import ModalEditProject from "@/components/UI/organisms/ModalEditProject";
 
-export function StatisticsCard({ title, value, description, id, getProjects }) {
+export function StatisticsCard({
+  title,
+  value,
+  description,
+  id,
+  getProjects,
+  tasks,
+  setCurrentProject,
+}) {
   const colors = ["blue", "orange", "pink", "green"];
   const navigate = useNavigate();
 
@@ -37,7 +45,15 @@ export function StatisticsCard({ title, value, description, id, getProjects }) {
           {value}
         </Typography>
       </CardBody>
-      <button onClick={() => navigate(`/dashboard/project`)}>
+      <button
+        onClick={() => {
+          setCurrentProject({
+            id,
+            tasks,
+          });
+          navigate(`/dashboard/project`);
+        }}
+      >
         <CardFooter className="border-white-50 border-t p-4">
           <div>
             <Typography className="text-white-400 font-normal">

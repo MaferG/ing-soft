@@ -16,6 +16,7 @@ import {
 } from "@/pages/dashboard";
 import { SignIn, SignUp, LogOut } from "@/pages/auth";
 
+
 const icon = {
   className: "w-5 h-5 text-inherit",
 };
@@ -44,21 +45,9 @@ export const routes = [
       },
       {
         icon: <TableCellsIcon {...icon} />,
-        name: "proyecto",
+        name: "tareas",
         path: "/project",
         element: <Project />,
-      },
-      {
-        icon: <UserCircleIcon {...icon} />,
-        name: "reportes",
-        path: "/profile",
-        element: <Profile />,
-      },
-      {
-        icon: <BellIcon {...icon} />,
-        name: "agenda",
-        path: "/tables",
-        element: <Tables />,
       },
     ],
   },

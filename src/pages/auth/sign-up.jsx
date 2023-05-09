@@ -11,9 +11,6 @@ export function SignUp() {
   const nav = useNavigate();
   const usersCollectionRef = collection(db, "users");
 
-
-  console.log("CURRENT USER", auth?.currentUser?.email);
-
   const handleRegister = async (event, email, password, name, lastname, gender) => {
     event.preventDefault();
     try {

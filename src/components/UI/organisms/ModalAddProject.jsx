@@ -36,6 +36,23 @@ export default function ModalAddProject({ getProjects }) {
       await addDoc(projectCollectionRef, {
         name: formData.name,
         description: formData.lastname,
+        tasks: {
+          todo: [
+            {
+              name: "task1",
+            },
+          ],
+          progress: [
+            {
+              name: "task2",
+            },
+          ],
+          done: [
+            {
+              name: "task3",
+            },
+          ],
+        },
       });
 
       getProjects();

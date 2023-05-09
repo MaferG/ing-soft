@@ -14,7 +14,7 @@ import { StatisticsChart } from "@/widgets/charts";
 import { ordersOverviewData } from "@/data";
 import ModalAddProject from "../UI/organisms/ModalAddProject";
 
-export function ProjectsTemplate({ projects, getProjects }) {
+export function ProjectsTemplate({ projects, getProjects, setCurrentProject }) {
   return (
     <div className="mt-12">
       <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-3">
@@ -24,15 +24,17 @@ export function ProjectsTemplate({ projects, getProjects }) {
               <ModalAddProject getProjects={getProjects} />
             </Typography>
           </CardHeader>
-          <CardBody className="overflow-x-scroll p-5">
+          <CardBody className="overflow-hidden p-5">
             <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
-              {projects.map(({ name, description, id }) => (
+              {projects.map(({ name, description, id, tasks }) => (
                 <StatisticsCard
                   key={name}
                   title={name}
                   getProjects={getProjects}
                   id={id}
                   description={description}
+                  tasks={tasks ?? []}
+                  setCurrentProject={setCurrentProject}
                 />
               ))}
             </div>
