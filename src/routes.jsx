@@ -6,8 +6,16 @@ import {
   ArrowRightOnRectangleIcon,
   UserPlusIcon,
 } from "@heroicons/react/24/solid";
-import { Home, Profile, Tables, Project } from "@/pages/dashboard";
-import { SignIn, SignUp } from "@/pages/auth";
+import {
+  Home,
+  Profile,
+  Tables,
+  Project,
+  Users,
+  Projects,
+} from "@/pages/dashboard";
+import { SignIn, SignUp, LogOut } from "@/pages/auth";
+
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -24,32 +32,44 @@ export const routes = [
         element: <Home />,
       },
       {
-        icon: <UserCircleIcon {...icon} />,
-        name: "reportes",
-        path: "/profile",
-        element: <Profile />,
-      },
-      {
-        icon: <TableCellsIcon {...icon} />,
-        name: "agenda",
-        path: "/tables",
-        element: <Tables />,
+        icon: <UserPlusIcon {...icon} />,
+        name: "Usuarios",
+        path: "/users",
+        element: <Users />,
       },
       {
         icon: <TableCellsIcon {...icon} />,
         name: "proyectos",
+        path: "/projects",
+        element: <Projects />,
+      },
+      {
+        icon: <TableCellsIcon {...icon} />,
+        name: "tareas",
         path: "/project",
         element: <Project />,
       },
     ],
   },
   {
-    title: "Proyectos",
+    title: "Registro",
     layout: "auth",
     pages: [
       {
         icon: <ArrowRightOnRectangleIcon {...icon} />,
-        name: "proyectos",
+        name: "Log Out",
+        path: "/log-out",
+        element: <LogOut />,
+      },
+      {
+        icon: <ArrowRightOnRectangleIcon {...icon} />,
+        name: "Registrarse",
+        path: "/sign-up",
+        element: <SignUp />,
+      },
+      {
+        icon: <ArrowRightOnRectangleIcon {...icon} />,
+        name: "Iniciar sesion",
         path: "/sign-in",
         element: <SignIn />,
       },

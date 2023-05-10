@@ -30,12 +30,16 @@ export function Auth() {
       path: "/auth/sign-in",
       icon: ArrowRightOnRectangleIcon,
     },
+    {
+      name: "log out",
+      path: "/auth/log-out",
+      icon: ArrowRightOnRectangleIcon,
+    },
   ];
 
   return (
     <div className="relative min-h-screen w-full">
       <div className="container relative z-40 mx-auto p-4">
-        <Navbar routes={navbarRoutes} />
       </div>
       <Routes>
         {routes.map(
