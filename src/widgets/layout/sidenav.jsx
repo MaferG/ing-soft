@@ -8,8 +8,46 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import { useMaterialTailwindController, setOpenSidenav } from "@/context";
+import { UserContext } from "@/context/UserContext";
+import { useContext, useEffect, useState } from "react";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
+import { auth, db } from "../../configs/firebase";
 
 export function Sidenav({ brandImg, brandName, routes }) {
+  const { user } = useContext(UserContext);
+  const usersCollectionRef = collection(db, "users");
+  const [rol, setRol] = useState();
+  console.log("Rol", rol);
+
+  const getUsers = async () => {
+    try {
+      const data = await getDocs(usersCollectionRef);
+      const filterData = data.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      const findUser = filterData.find(
+        (item) => item.email.toLowerCase() == user?.user?.email
+      );
+      setRol(findUser?.rol);
+      console.log("DataUSUARIO", findUser, user?.user?.email);
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
+
+  useEffect(() => {
+    getUsers();
+  }, [routes]);
+
+  console.log("USerContext", user?.user?.email);
+
   const [controller, dispatch] = useMaterialTailwindController();
   const { sidenavColor, sidenavType, openSidenav } = controller;
   const sidenavTypes = {
@@ -64,32 +102,38 @@ export function Sidenav({ brandImg, brandName, routes }) {
               </li>
             )}
             {pages.map(({ icon, name, path }) => (
-              <li key={name}>
-                <NavLink to={`/${layout}${path}`}>
-                  {({ isActive }) => (
-                    <Button
-                      variant={isActive ? "gradient" : "text"}
-                      color={
-                        isActive
-                          ? sidenavColor
-                          : sidenavType === "dark"
-                          ? "white"
-                          : "blue-gray"
-                      }
-                      className="flex items-center gap-4 px-4 capitalize"
-                      fullWidth
-                    >
-                      {icon}
-                      <Typography
-                        color="inherit"
-                        className="font-medium capitalize"
-                      >
-                        {name}
-                      </Typography>
-                    </Button>
-                  )}
-                </NavLink>
-              </li>
+              <>
+                {name == "Usuarios" && rol != "Admin" ? (
+                  <></>
+                ) : (
+                  <li key={name}>
+                    <NavLink to={`/${layout}${path}`}>
+                      {({ isActive }) => (
+                        <Button
+                          variant={isActive ? "gradient" : "text"}
+                          color={
+                            isActive
+                              ? sidenavColor
+                              : sidenavType === "dark"
+                              ? "white"
+                              : "blue-gray"
+                          }
+                          className="flex items-center gap-4 px-4 capitalize"
+                          fullWidth
+                        >
+                          {icon}
+                          <Typography
+                            color="inherit"
+                            className="font-medium capitalize"
+                          >
+                            {name}
+                          </Typography>
+                        </Button>
+                      )}
+                    </NavLink>
+                  </li>
+                )}
+              </>
             ))}
           </ul>
         ))}

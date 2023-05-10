@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import HomeTemplate from "@/components/templates/Home";
 import { auth, db } from "../../configs/firebase";
 import { doc, getDoc, addDoc } from "firebase/firestore";
+import { Projects } from ".";
 
 export function Home() {
   const currentUser = auth.currentUser?.email;
@@ -43,7 +44,7 @@ export function Home() {
     return <div>Loading...</div>;
   }*/
 
-  return <HomeTemplate />;
+  return <Projects />;
 }
 
 export default Home;

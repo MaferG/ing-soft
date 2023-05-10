@@ -46,6 +46,13 @@ export function TasksTemplate({ tasks, id, setTasks }) {
                           >
                             {name}
                           </Typography>
+                          <Typography
+                            as="span"
+                            variant="small"
+                            className="text-xs font-medium text-blue-gray-500"
+                          >
+                            {description}
+                          </Typography>
                         </div>
                       </div>
                     </CardBody>
@@ -100,6 +107,13 @@ export function TasksTemplate({ tasks, id, setTasks }) {
                           >
                             {name}
                           </Typography>
+                          <Typography
+                            as="span"
+                            variant="small"
+                            className="text-xs font-medium text-blue-gray-500"
+                          >
+                            {description}
+                          </Typography>
                         </div>
                       </div>
                     </CardBody>
@@ -153,6 +167,13 @@ export function TasksTemplate({ tasks, id, setTasks }) {
                             className="block font-medium"
                           >
                             {name}
+                          </Typography>{" "}
+                          <Typography
+                            as="span"
+                            variant="small"
+                            className="text-xs font-medium text-blue-gray-500"
+                          >
+                            {description}
                           </Typography>
                         </div>
                       </div>
